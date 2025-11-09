@@ -281,7 +281,7 @@ export default function Home() {
                   Explain
                 </Button>
               </DrawerTrigger>
-              <DrawerContent>
+              <DrawerContent className={"px-1"}>
                 <DrawerHeader>
                   <DrawerTitle className={"flex justify-center"}>
                     <Sparkles className="text-center mr-2" />
