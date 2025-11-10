@@ -1,3 +1,5 @@
+import { fetchWithTimeoutAndRetry } from "@/app/utils/fetch";
+
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const title = searchParams.get("title");
@@ -11,7 +13,8 @@ export async function GET(req) {
 
   for (const url of endpoints) {
     try {
-      const res = await fetch(url, { cache: "no-store" });
+      console.log('hit api!')
+      const res = await fetchWithTimeoutAndRetry(url, { cache: "no-store" }, 3000, 1);
       if (!res.ok) continue;
       const data = await res.json();
       const lyrics = data.lyrics || data.data?.lyrics;

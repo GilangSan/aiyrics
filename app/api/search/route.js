@@ -1,8 +1,11 @@
+import { fetchWithTimeoutAndRetry } from "@/app/utils/fetch";
+
+
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const query = searchParams.get("query");
   try {
-    const res = await fetch(`https://api.lyrics.ovh/suggest/${query}`);
+    const res = await fetchWithTimeoutAndRetry(`https://api.lyrics.ovh/suggest/${query}`, {}, 3000, 5);
     const data = await res.json();
     return new Response(JSON.stringify({ suggestions: data.data }), {
       status: 200,
