@@ -1,4 +1,4 @@
-AIyrics
+# AIyrics
 
 AIyrics is a small Next.js (App Router) application that helps you search for songs, fetch lyrics from multiple providers, and get concise AI-generated explanations of lyrics.
 
