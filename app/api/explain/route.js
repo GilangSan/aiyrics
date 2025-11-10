@@ -17,7 +17,7 @@ function countryCodeToName(code, locale = "en") {
 
 export async function POST(req) {
   let { lyrics, country } = await req.json();
-  let getCode = countryCodeToName(country)
+  let getCode = countryCodeToName(country);
 
   const response = await client.responses.create({
     model: "openai/gpt-oss-20b",
@@ -30,6 +30,10 @@ ${lyrics}`,
   });
   return new Response(JSON.stringify({ output: response.output_text }), {
     status: 200,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+      "Access-Control-Allow-Origin": "*", // izinkan semua origin
+    },
   });
 }
