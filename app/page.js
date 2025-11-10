@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Music2, Sparkles, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, Music2, Sparkles, X, Zap } from "lucide-react";
 import {
   InputGroup,
   InputGroupAddon,
@@ -46,6 +46,7 @@ export default function Home() {
   const [lyrics, setLyrics] = useState("");
   const [explained, setExplained] = useState("");
   const [explainLoading, setExplainLoading] = useState(false);
+  const [songFound, setSongFound] = useState(false);
 
   function addBreaksToLyrics() {
     if (!lyrics) return "No lyrics available.";
@@ -74,6 +75,7 @@ export default function Home() {
       const res = await fetch(`/api/search?query=${query}`);
       const data = await res.json();
       setLoading(false);
+      setSongFound(true);
       setSuggestions(data.suggestions);
       return data.suggestions;
     } catch (error) {
@@ -101,7 +103,7 @@ export default function Home() {
   }
 
   async function handleExplain() {
-    if (explained.length > 0) return
+    if (explained.length > 0) return;
     setExplainLoading(true);
     try {
       let ip = await fetch("https://ipinfo.io/json");
@@ -127,8 +129,18 @@ export default function Home() {
     }
   }
 
+  async function handleBack () {
+    setTab('search')
+    setLoading(false)
+  }
+
+  async function handleClear() {
+    setQuery('')
+  }
+
   useEffect(() => {
     if (!query.trim()) return;
+    if (query.length < 3) return
     const handler = setTimeout(async () => {
       await fetchSuggestions(query);
     }, 500);
@@ -139,7 +151,7 @@ export default function Home() {
   }, [query]);
 
   return (
-    <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-2 px-4 min-h-[85vh]">
+    <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-2 px-4 min-h-[85vh] max-sm:min-h-[80vh]">
       <h1 className="text-center font-bold text-3xl">
         Find lyrics and understand their meaning ⚡ faster than ever.
       </h1>
@@ -151,14 +163,25 @@ export default function Home() {
             <InputGroup>
               <InputGroupInput
                 onChange={handleSearch}
+                value={query}
                 placeholder="Music Title"
                 disabled={loading && true}
               />
               <InputGroupAddon>
                 <Music2 />
               </InputGroupAddon>
-              <InputGroupAddon className={loading ? 'block' : 'hidden'} align="inline-end">
+              <InputGroupAddon
+                className={loading ? "block" : "hidden"}
+                align="inline-end"
+              >
                 <Spinner />
+              </InputGroupAddon>
+              <InputGroupAddon
+                className={`${query.length > 0 ? "block" : "hidden"} cursor-pointer hover:text-neutral-300`}
+                align="inline-end"
+                onClick={handleClear}
+              >
+                <X />
               </InputGroupAddon>
             </InputGroup>
 
@@ -170,6 +193,9 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+            )}
+            {songFound && suggestions.length === 0 && !loading && (
+              <p className="text-neutral-400">Song not found.</p>
             )}
             <ul
               className={`suggestion-box w-full ${
@@ -210,8 +236,16 @@ export default function Home() {
               ))}
             </ul>
             <p className="text-sm text-neutral-500 text-center">
-              We got the lyrics from some open Public API!<br />
-              See it right <a className="underline" target="blank" href="https://github.com/GilangSan/aiyrics">there</a>
+              We got the lyrics from some open Public API!
+              <br />
+              See it right{" "}
+              <a
+                className="underline"
+                target="blank"
+                href="https://github.com/GilangSan/aiyrics"
+              >
+                there
+              </a>
             </p>
           </div>
         </>
@@ -252,7 +286,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="bg-neutral-800/50 border border-neutral-700/50 rounded-xl px-6 py-3">
+            <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl px-6 py-3">
               <div className="flex justify-between items-center">
                 <p className="mb-1">Lyrics</p>
                 <CopyButton textToCopy={lyrics} />
@@ -272,17 +306,22 @@ export default function Home() {
               </ScrollArea>
             </div>
             <Drawer>
-              <DrawerTrigger>
-                <Button
-                  variant="outline"
-                  className="w-full cursor-pointer"
-                  onClick={handleExplain}
-                >
-                  <Sparkles className="mr-1" />
-                  Explain
+              <div className="flex w-full gap-2">
+                <Button onClick={handleBack} variant={"outline"} className={"flex cursor-pointer"}>
+                  <ArrowLeft />
                 </Button>
-              </DrawerTrigger>
-              <DrawerContent className={'px-2'}>
+                <DrawerTrigger className={"w-full"}>
+                  <Button
+                    variant="outline"
+                    className="w-full cursor-pointer"
+                    onClick={handleExplain}
+                  >
+                    <Sparkles className="mr-1" />
+                    Explain
+                  </Button>
+                </DrawerTrigger>
+              </div>
+              <DrawerContent className={"px-3"}>
                 <DrawerHeader>
                   <DrawerTitle className={"flex justify-center"}>
                     <Sparkles className="text-center mr-2" />
@@ -290,12 +329,12 @@ export default function Home() {
                   </DrawerTitle>
                 </DrawerHeader>
                 {explainLoading === true ? (
-                  <Skeleton className={'h-20 max-w-xl mx-auto w-full rounded-xl'}></Skeleton>
+                  <Skeleton
+                    className={"h-20 max-w-xl mx-auto w-full rounded-xl"}
+                  ></Skeleton>
                 ) : (
                   <ScrollArea className="bg-neutral-900 text-neutral-300 border border-neutral-800 max-w-xl mx-auto w-full max-sm:h-[50vh] px-4 py-3 rounded-xl">
-                    <p>
-                      {formatAiTextToJsx(explained)}
-                    </p>
+                    <p>{formatAiTextToJsx(explained)}</p>
                   </ScrollArea>
                 )}
                 <DrawerFooter className={"max-w-xl mx-auto"}>
