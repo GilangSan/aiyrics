@@ -152,11 +152,12 @@ export default function Home() {
               <InputGroupInput
                 onChange={handleSearch}
                 placeholder="Music Title"
+                disabled={loading && true}
               />
               <InputGroupAddon>
                 <Music2 />
               </InputGroupAddon>
-              <InputGroupAddon className={"hidden"} align="inline-end">
+              <InputGroupAddon className={loading ? 'block' : 'hidden'} align="inline-end">
                 <Spinner />
               </InputGroupAddon>
             </InputGroup>
@@ -281,7 +282,7 @@ export default function Home() {
                   Explain
                 </Button>
               </DrawerTrigger>
-              <DrawerContent>
+              <DrawerContent className={'px-2'}>
                 <DrawerHeader>
                   <DrawerTitle className={"flex justify-center"}>
                     <Sparkles className="text-center mr-2" />
