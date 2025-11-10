@@ -219,7 +219,7 @@ export default function Home() {
                       className="rounded object-cover"
                       width={40}
                       height={40}
-                      src={res.album.cover_small}
+                      src={res.album.cover_small.replace(/^http:/, "https:")}
                       alt="Album Cover"
                     />
                     <div className="flex flex-col">
@@ -230,7 +230,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <AudioPlayer src={res.preview} />
+                    <AudioPlayer src={res.preview.replace(/^http:/, "https:")} />
                   </div>
                 </li>
               ))}
@@ -261,7 +261,7 @@ export default function Home() {
                     height={70}
                     alt="album cover"
                     className="rounded object-cover"
-                    src={songData.album.cover_medium}
+                    src={songData.album.cover_medium.replace(/^http:/, "https:")}
                   />
                 </div>
                 <div className="flex justify-between items-center gap-2">
@@ -274,7 +274,7 @@ export default function Home() {
                     <p className="text-neutral-400">
                       {convertSecondsToDuration(songData.duration)}
                     </p>
-                    <AudioPlayer src={songData.preview} size={35} />
+                    <AudioPlayer src={songData.preview.replace(/^http:/, "https:")} size={35} />
                   </div>
                 </div>
               </div>
@@ -282,7 +282,7 @@ export default function Home() {
                 <p className="text-neutral-400">
                   {convertSecondsToDuration(songData.duration)}
                 </p>
-                <AudioPlayer src={songData.preview} size={35} />
+                <AudioPlayer src={songData.preview.replace(/^http:/, "https:")} size={35} />
               </div>
             </div>
 
