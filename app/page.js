@@ -132,6 +132,7 @@ export default function Home() {
   async function handleBack () {
     setTab('search')
     setLoading(false)
+    setExplained("")
   }
 
   async function handleClear() {
@@ -143,7 +144,7 @@ export default function Home() {
     if (query.length < 3) return
     const handler = setTimeout(async () => {
       await fetchSuggestions(query);
-    }, 500);
+    }, 1000);
 
     return () => {
       clearTimeout(handler);
