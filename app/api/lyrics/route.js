@@ -1,4 +1,5 @@
 import { fetchWithTimeoutAndRetry } from "@/app/utils/fetch";
+import { findLyrics } from "@/app/utils/findLyrics";
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
@@ -6,25 +7,21 @@ export async function GET(req) {
   const artist = searchParams.get("artist");
 
   const endpoints = [
-    `https://api.lyrics.ovh/v1/${artist}/${title}`,
+    `system`,
     `https://lyrics.lewdhutao.my.eu.org/v2/musixmatch/lyrics?title=${title}&artist=${artist}`,
     `https://lyrics.lewdhutao.my.eu.org/v2/youtube/lyrics?title=${title}&artist=${artist}`,
   ];
 
+  let i = 0
+
   for (const url of endpoints) {
     try {
       console.log("hit api!");
-      const res = await fetchWithTimeoutAndRetry(
-        url,
-        { cache: "no-store" },
-        3000,
-        1
-      );
-      if (!res.ok) continue;
-      const data = await res.json();
-      const lyrics = data.lyrics || data.data?.lyrics;
-      if (lyrics) {
-        return new Response(JSON.stringify({ lyrics }), {
+      if (i === 0) {
+        console.log('first hit')
+        let lyrics = await findLyrics(title, artist)
+        if (lyrics){
+          return new Response(JSON.stringify({ lyrics: lyrics }), {
           status: 200,
           headers: {
             "Content-Type": "application/json",
@@ -32,8 +29,33 @@ export async function GET(req) {
             "Access-Control-Allow-Origin": "*", // izinkan semua origin
           },
         });
+        }
+        i++
+      } else {
+        console.log('other hit')
+        const res = await fetchWithTimeoutAndRetry(
+          url,
+          { cache: "no-store" },
+          3000,
+          1
+        );
+        if (!res.ok) continue;
+        const data = await res.json();
+        const lyrics = data.lyrics || data.data?.lyrics;
+        if (lyrics) {
+          return new Response(JSON.stringify({ lyrics }), {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "no-store",
+              "Access-Control-Allow-Origin": "*", // izinkan semua origin
+            },
+          });
+        }
+        i++;
       }
     } catch (e) {
+      i++;
       continue;
     }
   }

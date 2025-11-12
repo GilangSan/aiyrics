@@ -5,7 +5,7 @@ export async function GET(req) {
   const query = searchParams.get("query");
   try {
     const res = await fetchWithTimeoutAndRetry(
-      `https://api.lyrics.ovh/suggest/${query}`,
+      `http://api.deezer.com/search?limit=5&q=${query}`,
       {},
       3000,
       5
