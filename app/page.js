@@ -25,7 +25,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import Head from "next/head";
 
 import { useState, useRef, useEffect, use } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -154,12 +153,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>aIyrics</title>
-        <meta name="description" content="Helps people finding lyrics!" />
-        <meta name="keywords" content="lyrics, song, music, ai" />
-        <meta name="google-site-verification" content="k2A5VPHtRP2S_fXc5Ajv4WZ6_GIhdRluH8nv0Fmm3a4" />
-      </Head>
       <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-2 px-4 min-h-[85vh] max-sm:min-h-[80vh]">
         <h1 className="text-center font-bold text-3xl">
           Find lyrics and understand their meaning ⚡ faster than ever.
