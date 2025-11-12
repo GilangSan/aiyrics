@@ -25,6 +25,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import Head from "next/head";
 
 import { useState, useRef, useEffect, use } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -129,19 +130,19 @@ export default function Home() {
     }
   }
 
-  async function handleBack () {
-    setTab('search')
-    setLoading(false)
-    setExplained("")
+  async function handleBack() {
+    setTab("search");
+    setLoading(false);
+    setExplained("");
   }
 
   async function handleClear() {
-    setQuery('')
+    setQuery("");
   }
 
   useEffect(() => {
     if (!query.trim()) return;
-    if (query.length < 3) return
+    if (query.length < 3) return;
     const handler = setTimeout(async () => {
       await fetchSuggestions(query);
     }, 1000);
@@ -152,202 +153,227 @@ export default function Home() {
   }, [query]);
 
   return (
-    <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-2 px-4 min-h-[85vh] max-sm:min-h-[80vh]">
-      <h1 className="text-center font-bold text-3xl">
-        Find lyrics and understand their meaning ⚡ faster than ever.
-      </h1>
-      <p>Try it now!</p>
-      {tab === "search" && (
-        <>
-          <div className="main-container bg-neutral-900 rounded-xl border border-neutral-800 w-full px-6 py-8 mt-6 flex flex-col items-center justify-center gap-4">
-            <p className="text-xl">Enter the music title!</p>
-            <InputGroup>
-              <InputGroupInput
-                onChange={handleSearch}
-                value={query}
-                placeholder="Music Title"
-                disabled={loading && true}
-              />
-              <InputGroupAddon>
-                <Music2 />
-              </InputGroupAddon>
-              <InputGroupAddon
-                className={loading ? "block" : "hidden"}
-                align="inline-end"
-              >
-                <Spinner />
-              </InputGroupAddon>
-              <InputGroupAddon
-                className={`${query.length > 0 ? "block" : "hidden"} cursor-pointer hover:text-neutral-300`}
-                align="inline-end"
-                onClick={handleClear}
-              >
-                <X />
-              </InputGroupAddon>
-            </InputGroup>
-
-            {loading && suggestions.length === 0 && (
-              <div className="flex flex-col w-full gap-2">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="w-full">
-                    <Skeleton className="w-full h-12 rounded-md" />
-                  </div>
-                ))}
-              </div>
-            )}
-            {songFound && suggestions.length === 0 && !loading && (
-              <p className="text-neutral-400">Song not found.</p>
-            )}
-            <ul
-              className={`suggestion-box w-full ${
-                suggestions.length === 0 ? "hidden" : "flex"
-              } flex-col gap-2`}
-            >
-              {suggestions.slice(0, 5).map((res) => (
-                <li
-                  className={`bg-neutral-800/75 cursor-pointer hover:bg-neutral-800 border border-neutral-700 rounded-md w-full px-3 py-2 flex justify-between items-center gap-3 ${
-                    loading ? "animate-pulse" : ""
-                  }`}
-                  key={res.id}
-                  onClick={() => {
-                    setSongData(res);
-                    setTab("song");
-                    fetchLyrics(res.artist.name, res.title);
-                  }}
+    <>
+      <Head>
+        <title>aIyrics</title>
+        <meta name="description" content="Helps people finding lyrics!" />
+        <meta name="keywords" content="lyrics, song, music, ai" />
+        <meta name="google-site-verification" content="k2A5VPHtRP2S_fXc5Ajv4WZ6_GIhdRluH8nv0Fmm3a4" />
+      </Head>
+      <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-2 px-4 min-h-[85vh] max-sm:min-h-[80vh]">
+        <h1 className="text-center font-bold text-3xl">
+          Find lyrics and understand their meaning ⚡ faster than ever.
+        </h1>
+        <p>Try it now!</p>
+        {tab === "search" && (
+          <>
+            <div className="main-container bg-neutral-900 rounded-xl border border-neutral-800 w-full px-6 py-8 mt-6 flex flex-col items-center justify-center gap-4">
+              <p className="text-xl">Enter the music title!</p>
+              <InputGroup>
+                <InputGroupInput
+                  onChange={handleSearch}
+                  value={query}
+                  placeholder="Music Title"
+                  disabled={loading && true}
+                />
+                <InputGroupAddon>
+                  <Music2 />
+                </InputGroupAddon>
+                <InputGroupAddon
+                  className={loading ? "block" : "hidden"}
+                  align="inline-end"
                 >
-                  <div className="flex gap-3">
+                  <Spinner />
+                </InputGroupAddon>
+                <InputGroupAddon
+                  className={`${
+                    query.length > 0 ? "block" : "hidden"
+                  } cursor-pointer hover:text-neutral-300`}
+                  align="inline-end"
+                  onClick={handleClear}
+                >
+                  <X />
+                </InputGroupAddon>
+              </InputGroup>
+
+              {loading && suggestions.length === 0 && (
+                <div className="flex flex-col w-full gap-2">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-full">
+                      <Skeleton className="w-full h-12 rounded-md" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {songFound && suggestions.length === 0 && !loading && (
+                <p className="text-neutral-400">Song not found.</p>
+              )}
+              <ul
+                className={`suggestion-box w-full ${
+                  suggestions.length === 0 ? "hidden" : "flex"
+                } flex-col gap-2`}
+              >
+                {suggestions.slice(0, 5).map((res) => (
+                  <li
+                    className={`bg-neutral-800/75 cursor-pointer hover:bg-neutral-800 border border-neutral-700 rounded-md w-full px-3 py-2 flex justify-between items-center gap-3 ${
+                      loading ? "animate-pulse" : ""
+                    }`}
+                    key={res.id}
+                    onClick={() => {
+                      setSongData(res);
+                      setTab("song");
+                      fetchLyrics(res.artist.name, res.title);
+                    }}
+                  >
+                    <div className="flex gap-3">
+                      <Image
+                        className="rounded object-cover"
+                        width={40}
+                        height={40}
+                        src={res.album.cover_small.replace(/^http:/, "https:")}
+                        alt="Album Cover"
+                      />
+                      <div className="flex flex-col">
+                        <span className="">{res.title}</span>
+                        <span className="text-sm text-neutral-500">
+                          {res.artist.name}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <AudioPlayer
+                        src={res.preview.replace(/^http:/, "https:")}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-sm text-neutral-500 text-center">
+                We got the lyrics from some open Public API!
+                <br />
+                See it right{" "}
+                <a
+                  className="underline"
+                  target="blank"
+                  href="https://github.com/GilangSan/aiyrics"
+                >
+                  there
+                </a>
+              </p>
+            </div>
+          </>
+        )}
+        {tab === "song" && (
+          <>
+            <div className="main-container bg-neutral-900 rounded-xl border border-neutral-800 w-full px-6 py-8 mt-6 flex flex-col gap-4">
+              <div className="flex justify-between w-full">
+                <div className="flex max-sm:flex-col gap-3 w-full">
+                  <div className="flex max-sm:w-full max-sm:justify-center">
                     <Image
+                      width={70}
+                      height={70}
+                      alt="album cover"
                       className="rounded object-cover"
-                      width={40}
-                      height={40}
-                      src={res.album.cover_small.replace(/^http:/, "https:")}
-                      alt="Album Cover"
+                      src={songData.album.cover_medium.replace(
+                        /^http:/,
+                        "https:"
+                      )}
                     />
-                    <div className="flex flex-col">
-                      <span className="">{res.title}</span>
-                      <span className="text-sm text-neutral-500">
-                        {res.artist.name}
-                      </span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <div>
+                      <h2 className="text-xl font-bold">{songData.title}</h2>
+                      <p className="text-neutral-300">{songData.album.title}</p>
+                      <p className="text-neutral-500">{songData.artist.name}</p>
+                    </div>
+                    <div className="lg:hidden">
+                      <p className="text-neutral-400">
+                        {convertSecondsToDuration(songData.duration)}
+                      </p>
+                      <AudioPlayer
+                        src={songData.preview.replace(/^http:/, "https:")}
+                        size={35}
+                      />
                     </div>
                   </div>
-                  <div>
-                    <AudioPlayer src={res.preview.replace(/^http:/, "https:")} />
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <p className="text-sm text-neutral-500 text-center">
-              We got the lyrics from some open Public API!
-              <br />
-              See it right{" "}
-              <a
-                className="underline"
-                target="blank"
-                href="https://github.com/GilangSan/aiyrics"
-              >
-                there
-              </a>
-            </p>
-          </div>
-        </>
-      )}
-      {tab === "song" && (
-        <>
-          <div className="main-container bg-neutral-900 rounded-xl border border-neutral-800 w-full px-6 py-8 mt-6 flex flex-col gap-4">
-            <div className="flex justify-between w-full">
-              <div className="flex max-sm:flex-col gap-3 w-full">
-                <div className="flex max-sm:w-full max-sm:justify-center">
-                  <Image
-                    width={70}
-                    height={70}
-                    alt="album cover"
-                    className="rounded object-cover"
-                    src={songData.album.cover_medium.replace(/^http:/, "https:")}
+                </div>
+                <div className="flex gap-3 items-center max-sm:hidden">
+                  <p className="text-neutral-400">
+                    {convertSecondsToDuration(songData.duration)}
+                  </p>
+                  <AudioPlayer
+                    src={songData.preview.replace(/^http:/, "https:")}
+                    size={35}
                   />
                 </div>
-                <div className="flex justify-between items-center gap-2">
-                  <div>
-                    <h2 className="text-xl font-bold">{songData.title}</h2>
-                    <p className="text-neutral-300">{songData.album.title}</p>
-                    <p className="text-neutral-500">{songData.artist.name}</p>
-                  </div>
-                  <div className="lg:hidden">
-                    <p className="text-neutral-400">
-                      {convertSecondsToDuration(songData.duration)}
-                    </p>
-                    <AudioPlayer src={songData.preview.replace(/^http:/, "https:")} size={35} />
-                  </div>
-                </div>
               </div>
-              <div className="flex gap-3 items-center max-sm:hidden">
-                <p className="text-neutral-400">
-                  {convertSecondsToDuration(songData.duration)}
-                </p>
-                <AudioPlayer src={songData.preview.replace(/^http:/, "https:")} size={35} />
-              </div>
-            </div>
 
-            <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl px-6 py-3">
-              <div className="flex justify-between items-center">
-                <p className="mb-1">Lyrics</p>
-                <CopyButton textToCopy={lyrics} />
+              <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl px-6 py-3">
+                <div className="flex justify-between items-center">
+                  <p className="mb-1">Lyrics</p>
+                  <CopyButton textToCopy={lyrics} />
+                </div>
+                <ScrollArea className="lyrics-container w-full h-50 text-neutral-400">
+                  {loading ? (
+                    <div className="flex flex-col w-full gap-1">
+                      {[...Array(10)].map((_, i) => (
+                        <div key={i} className="w-full">
+                          <Skeleton className="w-full h-4 rounded-md mb-2" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <>{addBreaksToLyrics()}</>
+                  )}
+                </ScrollArea>
               </div>
-              <ScrollArea className="lyrics-container w-full h-50 text-neutral-400">
-                {loading ? (
-                  <div className="flex flex-col w-full gap-1">
-                    {[...Array(10)].map((_, i) => (
-                      <div key={i} className="w-full">
-                        <Skeleton className="w-full h-4 rounded-md mb-2" />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <>{addBreaksToLyrics()}</>
-                )}
-              </ScrollArea>
-            </div>
-            <Drawer>
-              <div className="flex w-full gap-2">
-                <Button onClick={handleBack} variant={"outline"} className={"flex cursor-pointer"}>
-                  <ArrowLeft />
-                </Button>
-                <DrawerTrigger className={"w-full"}>
+              <Drawer>
+                <div className="flex w-full gap-2">
                   <Button
-                    variant="outline"
-                    className="w-full cursor-pointer"
-                    onClick={handleExplain}
+                    onClick={handleBack}
+                    variant={"outline"}
+                    className={"flex cursor-pointer"}
                   >
-                    <Sparkles className="mr-1" />
-                    Explain
+                    <ArrowLeft />
                   </Button>
-                </DrawerTrigger>
-              </div>
-              <DrawerContent className={"px-3"}>
-                <DrawerHeader>
-                  <DrawerTitle className={"flex justify-center"}>
-                    <Sparkles className="text-center mr-2" />
-                    AI
-                  </DrawerTitle>
-                </DrawerHeader>
-                {explainLoading === true ? (
-                  <Skeleton
-                    className={"h-20 max-w-xl mx-auto w-full rounded-xl"}
-                  ></Skeleton>
-                ) : (
-                  <ScrollArea className="bg-neutral-900 text-neutral-300 border border-neutral-800 max-w-xl mx-auto w-full max-sm:h-[50vh] px-4 py-3 rounded-xl">
-                    <p>{formatAiTextToJsx(explained)}</p>
-                  </ScrollArea>
-                )}
-                <DrawerFooter className={"max-w-xl mx-auto"}>
-                  <p className="text-neutral-500 text-sm">
-                    This message is AI generated.
-                  </p>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
-          </div>
-        </>
-      )}
-    </div>
+                  <DrawerTrigger className={"w-full"}>
+                    <Button
+                      variant="outline"
+                      className="w-full cursor-pointer"
+                      onClick={handleExplain}
+                    >
+                      <Sparkles className="mr-1" />
+                      Explain
+                    </Button>
+                  </DrawerTrigger>
+                </div>
+                <DrawerContent className={"px-3"}>
+                  <DrawerHeader>
+                    <DrawerTitle className={"flex justify-center"}>
+                      <Sparkles className="text-center mr-2" />
+                      AI
+                    </DrawerTitle>
+                  </DrawerHeader>
+                  {explainLoading === true ? (
+                    <Skeleton
+                      className={"h-20 max-w-xl mx-auto w-full rounded-xl"}
+                    ></Skeleton>
+                  ) : (
+                    <ScrollArea className="bg-neutral-900 text-neutral-300 border border-neutral-800 max-w-xl mx-auto w-full max-sm:h-[50vh] px-4 py-3 rounded-xl">
+                      <p>{formatAiTextToJsx(explained)}</p>
+                    </ScrollArea>
+                  )}
+                  <DrawerFooter className={"max-w-xl mx-auto"}>
+                    <p className="text-neutral-500 text-sm">
+                      This message is AI generated.
+                    </p>
+                  </DrawerFooter>
+                </DrawerContent>
+              </Drawer>
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }
