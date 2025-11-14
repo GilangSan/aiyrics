@@ -129,5 +129,5 @@ export async function findLyrics(title, artistName) {
   const results = await Promise.all(promises);
   const valid = results.find((r) => r && r.trim().length > 0);
 
-  return valid || "Lyrics not found.";
+  return valid;
 }

@@ -48,14 +48,11 @@ export default function Home() {
   const [explainLoading, setExplainLoading] = useState(false);
   const [songFound, setSongFound] = useState(false);
 
-  function addBreaksToLyrics() {
+  function addBreak() {
     if (!lyrics) return "No lyrics available.";
 
     const cleanLines = lyrics
       .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
-
     return cleanLines.map((line, index) => (
       <span key={index}>
         {line}
@@ -144,7 +141,7 @@ export default function Home() {
     if (query.length < 3) return;
     const handler = setTimeout(async () => {
       await fetchSuggestions(query);
-    }, 1000);
+    }, 500);
 
     return () => {
       clearTimeout(handler);
@@ -167,7 +164,6 @@ export default function Home() {
                   onChange={handleSearch}
                   value={query}
                   placeholder="Music Title"
-                  disabled={loading && true}
                 />
                 <InputGroupAddon>
                   <Music2 />
@@ -316,7 +312,7 @@ export default function Home() {
                       ))}
                     </div>
                   ) : (
-                    <>{addBreaksToLyrics()}</>
+                    <>{addBreak()}</>
                   )}
                 </ScrollArea>
               </div>
