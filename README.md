@@ -1,8 +1,10 @@
-# AIyrics
+# AIyrics 🎵
 
 AIyrics is a small Next.js (App Router) application that helps you search for songs, fetch lyrics from multiple providers, and get concise AI-generated explanations of lyrics.
 
 The app wires a few lightweight API routes that call public lyrics APIs and a Groq/OpenAI-compatible model to explain lyrics in a chosen language.
+
+We're scrape some lyrics website and use Genius API.
 
 ---
 
@@ -34,6 +36,7 @@ The app wires a few lightweight API routes that call public lyrics APIs and a Gr
 The app expects a Groq/OpenAI API key to be available to the explain endpoint. By convention this project uses:
 
 - `GROQ_API_KEY` — used in `app/api/explain/route.js` as `process.env.GROQ_API_KEY`.
+- `GENIUS_ACCESS_TOKEN` — used in `app/api/lyrics/route.js` as `process.env.GENIUS_TOKEN_API`
 
 Note: I inferred this name from the server code; if you use OpenAI's official API instead, set the appropriate key and update the server code accordingly.
 
